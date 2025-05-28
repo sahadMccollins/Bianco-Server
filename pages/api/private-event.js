@@ -44,30 +44,23 @@ export default async function handler(req, res) {
         console.log("Parsed fields:", fields);
 
         const {
-            eventDate,
             guestRange,
+            eventDate,
             startTime,
             endTime,
-            location,
             additionalHours,
-            brandingNotes,
+            emirate,
+            areaLocality,
+            location,
+            flavours,
             baseRate,
             additionalHourRate,
+            transportFee,
+            subTotal,
+            vat,
             currency,
             totalAmount
         } = fields;
-
-        // Prepare attachments array if any files uploaded
-        const attachments = [];
-        if (files.brandingAssets) {
-            const fileArray = Array.isArray(files.brandingAssets) ? files.brandingAssets : [files.brandingAssets];
-            for (const file of fileArray) {
-                attachments.push({
-                    filename: file.originalFilename || file.newFilename,
-                    path: file.filepath,
-                });
-            }
-        }
 
         try {
             const transporter = nodemailer.createTransport({
@@ -91,15 +84,19 @@ export default async function handler(req, res) {
               <p><strong>Guest Range:</strong> ${guestRange}</p>
               <p><strong>Start Time:</strong> ${startTime}</p>
               <p><strong>End Time:</strong> ${endTime}</p>
-              <p><strong>Location:</strong> ${location}</p>
+              <p><strong>Emirate:</strong> ${emirate}</p>
+              <p><strong>Area / Locality:</strong> ${areaLocality}</p>
+              <p><strong>Full Address:</strong> ${location}</p>
               <p><strong>Additional Hours:</strong> ${additionalHours}</p>
-              <p><strong>Branding Notes:</strong> ${brandingNotes || 'N/A'}</p>
+              <p><strong>Flavours:</strong> ${flavours}</p>
               <p><strong>Base Rate:</strong> ${baseRate || 'N/A'}</p>
               <p><strong>Additional Hour Rate:</strong> ${additionalHourRate || 'N/A'}</p>
+              <p><strong>Transport Fee:</strong> ${transportFee || 'N/A'}</p>
+              <p><strong>Sub Total:</strong> ${subTotal || 'N/A'}</p>
+              <p><strong>VAT (5%):</strong> ${vat || 'N/A'}</p>
               <p><strong>Currency:</strong> ${currency || 'N/A'}</p>
               <p><strong>Total Amount:</strong> ${totalAmount || 'N/A'}</p>
             `,
-                attachments,
             });
 
             const cartId = `cart_${Date.now()}`;

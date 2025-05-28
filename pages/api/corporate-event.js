@@ -46,13 +46,16 @@ export default async function handler(req, res) {
             email,
             mobile,
             companyName,
-            eventDate,
             guestRange,
+            eventDate,
             startTime,
             endTime,
-            location,
             additionalHours,
-            brandingNotes
+            emirate,
+            areaLocality,
+            location,
+            brandingNotes,
+            flavours
         } = fields;
 
         // Prepare attachments array if any files uploaded
@@ -89,12 +92,15 @@ export default async function handler(req, res) {
           <p><strong>Email:</strong> ${email}</p>
           <p><strong>Phone:</strong> ${mobile}</p>
           <p><strong>Company:</strong> ${companyName}</p>
-          <p><strong>Event Date:</strong> ${eventDate}</p>
           <p><strong>Guest Range:</strong> ${guestRange}</p>
+          <p><strong>Event Date:</strong> ${eventDate}</p>
           <p><strong>Start Time:</strong> ${startTime}</p>
           <p><strong>End Time:</strong> ${endTime}</p>
-          <p><strong>Location:</strong> ${location}</p>
           <p><strong>Additional Hours:</strong> ${additionalHours}</p>
+          <p><strong>Emirate:</strong> ${emirate}</p>
+          <p><strong>Area / Locality:</strong> ${areaLocality}</p>
+          <p><strong>Full Address:</strong> ${location}</p>
+          <p><strong>Flavours:</strong> ${flavours}</p>
           <p><strong>Branding Notes:</strong> ${brandingNotes || 'N/A'}</p>
         `,
                 attachments,
