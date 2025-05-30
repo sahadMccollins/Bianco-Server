@@ -25,7 +25,7 @@ export default async function handler(req, res) {
 
         const respStatus = fields.respStatus?.[0];
 
-        if (respStatus === 'E') {
+        if (respStatus === 'A') {
             // Payment successful
             // return res.redirect(302, 'https://6448b5-4.myshopify.com/pages/thank-you');
             return res.redirect(302, process.env.THANKYOU_PAGE);

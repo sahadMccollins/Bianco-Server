@@ -47,7 +47,7 @@ export default async function handler(req, res) {
     } = data;
 
     // if (payment_result.response_status !== 'A') {
-    if (payment_result.response_status !== 'E') {
+    if (payment_result.response_status !== 'A') {
         return res.status(200).json({ message: 'Payment not approved' });
     }
 
