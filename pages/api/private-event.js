@@ -1,6 +1,11 @@
 import nodemailer from "nodemailer";
 import { IncomingForm } from 'formidable';
 import axios from "axios";
+import { MongoClient } from "mongodb";
+
+const client = new MongoClient(process.env.MONGODB_URI);
+await client.connect();
+const db = client.db("Bianco");
 
 export const config = {
     api: {
@@ -40,8 +45,6 @@ export default async function handler(req, res) {
             console.error('Form parsing error:', err);
             return res.status(500).json({ error: 'Form parsing error' });
         }
-
-        console.log("Parsed fields:", fields);
 
         const {
             guestRange,
@@ -111,8 +114,10 @@ export default async function handler(req, res) {
                     cart_description: "Private Event Booking",
                     cart_currency: "AED",
                     cart_amount: Number(totalAmount),
-                    callback: process.env.RETURN_URL,
+                    callback: process.env.CALLBACK_URL,
+                    // callback: "https://protecting-near-occasion-theories.trycloudflare.com/api/paytabs-redirect",
                     return: process.env.RETURN_URL,
+                    // return: "https://protecting-near-occasion-theories.trycloudflare.com/api/thank-you-redirect",
                 },
                 {
                     headers: {
@@ -122,7 +127,26 @@ export default async function handler(req, res) {
                 }
             );
 
-            console.log("pytab", paytabsRes);
+            await db.collection('bookings').insertOne({
+                cartId,
+                guestRange,
+                eventDate,
+                startTime,
+                endTime,
+                additionalHours,
+                emirate,
+                areaLocality,
+                location,
+                flavours,
+                baseRate,
+                additionalHourRate,
+                transportFee,
+                subTotal,
+                vat,
+                currency,
+                totalAmount,
+                createdAt: new Date(),
+            });
 
             const paymentLink = paytabsRes.data.redirect_url;
 
