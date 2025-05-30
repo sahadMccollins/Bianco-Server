@@ -13,8 +13,6 @@ export default async function handler(req, res) {
     console.log("Headers:", req.headers);
     console.log("URL:", req.url);
 
-    if (req.method !== 'POST') return res.status(405).end('Method Not Allowed');
-
     const form = new IncomingForm();
 
     form.parse(req, (err, fields, files) => {
