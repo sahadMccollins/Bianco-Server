@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import { IncomingForm } from 'formidable';
 import axios from "axios";
 import { MongoClient } from "mongodb";
+import nodemailerSendgrid from "nodemailer-sendgrid";
 
 const client = new MongoClient(process.env.MONGODB_URI);
 await client.connect();
@@ -66,16 +67,22 @@ export default async function handler(req, res) {
         } = fields;
 
         try {
-            const transporter = nodemailer.createTransport({
-                service: "gmail",
-                host: "smtp.gmail.com",
-                port: 587,
-                secure: false,
-                auth: {
-                    user: process.env.EMAIL_FROM,
-                    pass: process.env.EMAIL_PASSWORD,
-                },
-            });
+            // const transporter = nodemailer.createTransport({
+            //     service: "gmail",
+            //     host: "smtp.gmail.com",
+            //     port: 587,
+            //     secure: false,
+            //     auth: {
+            //         user: process.env.EMAIL_FROM,
+            //         pass: process.env.EMAIL_PASSWORD,
+            //     },
+            // });
+
+            const transporter = nodemailer.createTransport(
+                nodemailerSendgrid({
+                    apiKey: process.env.SENDGRID_API_KEY
+                })
+            );
 
             await transporter.sendMail({
                 from: process.env.EMAIL_FROM,

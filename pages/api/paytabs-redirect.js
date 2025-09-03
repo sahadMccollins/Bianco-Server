@@ -3,6 +3,7 @@ import { IncomingForm } from 'formidable';
 import axios from "axios";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { MongoClient } from "mongodb";
+import nodemailerSendgrid from "nodemailer-sendgrid";
 
 const client = new MongoClient(process.env.MONGODB_URI);
 await client.connect();
@@ -136,16 +137,22 @@ export default async function handler(req, res) {
     const pdfBytes = await pdfDoc.save();
 
     // 📧 Email the PDF
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-            user: process.env.EMAIL_FROM,
-            pass: process.env.EMAIL_PASSWORD,
-        },
-    });
+    // const transporter = nodemailer.createTransport({
+    //     service: 'gmail',
+    //     host: 'smtp.gmail.com',
+    //     port: 587,
+    //     secure: false,
+    //     auth: {
+    //         user: process.env.EMAIL_FROM,
+    //         pass: process.env.EMAIL_PASSWORD,
+    //     },
+    // });
+
+    const transporter = nodemailer.createTransport(
+        nodemailerSendgrid({
+            apiKey: process.env.SENDGRID_API_KEY
+        })
+    );
 
     await transporter.sendMail({
         from: process.env.EMAIL_FROM,
@@ -153,7 +160,7 @@ export default async function handler(req, res) {
         subject: 'Your Private Event Booking Invoice',
         html: `<p>Dear Customer,</p>
            <p>Thank you for your payment. Your booking invoice is attached.</p>
-           <p>Regards,<br>Bianco Italyy</p>`,
+           <p>Regards,<br>Bianco Italy</p>`,
         attachments: [
             {
                 filename: 'event-invoice.pdf',

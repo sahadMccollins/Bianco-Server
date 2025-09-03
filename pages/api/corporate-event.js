@@ -1,5 +1,6 @@
 import { IncomingForm } from 'formidable';
 import nodemailer from 'nodemailer';
+import nodemailerSendgrid from 'nodemailer-sendgrid';
 
 export const config = {
     api: {
@@ -71,16 +72,22 @@ export default async function handler(req, res) {
         }
 
         try {
-            const transporter = nodemailer.createTransport({
-                service: "gmail",
-                host: "smtp.gmail.com",
-                port: 587,
-                secure: false,
-                auth: {
-                    user: process.env.EMAIL_FROM,
-                    pass: process.env.EMAIL_PASSWORD,
-                },
-            });
+            // const transporter = nodemailer.createTransport({
+            //     service: "gmail",
+            //     host: "smtp.gmail.com",
+            //     port: 587,
+            //     secure: false,
+            //     auth: {
+            //         user: process.env.EMAIL_FROM,
+            //         pass: process.env.EMAIL_PASSWORD,
+            //     },
+            // });
+
+            const transporter = nodemailer.createTransport(
+                nodemailerSendgrid({
+                    apiKey: process.env.SENDGRID_API_KEY
+                })
+            );
 
             await transporter.sendMail({
                 from: process.env.EMAIL_FROM,
